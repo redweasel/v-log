@@ -1,9 +1,24 @@
 [package]
-name = "vlog"
+name = "v-log"
 version = "0.1.0"
+authors = ["The Rust Project Developers", "redweasel"]
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/redweasel/v-log"
+documentation = "https://docs.rs/v-log"
+description = """
+A lightweight visual logging/debugging facade for Rust
+"""
+categories = ["development-tools::debugging"]
+keywords = ["logging", "geometry"]
+rust-version = "1.68.0"
 edition = "2021"
+
+[package.metadata.docs.rs]
+features = ["std"]
 
 [dependencies]
 
 [features]
+default = ["std"]
 std = []

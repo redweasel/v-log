@@ -13,7 +13,7 @@
 /// # Examples
 ///
 /// ```
-/// use vlog::clear;
+/// use v_log::clear;
 ///
 /// clear!("main_surface");
 /// ```
@@ -45,7 +45,7 @@ macro_rules! clear {
 /// # Examples
 ///
 /// ```
-/// use vlog::message;
+/// use v_log::message;
 ///
 /// # struct Position { x: f32, y: f32 }
 /// let pos = Position { x: 3.234, y: -1.223 };
@@ -101,7 +101,7 @@ macro_rules! message {
 /// # Examples
 ///
 /// ```
-/// use vlog::point;
+/// use v_log::point;
 ///
 /// let pos1 = [3.234, -1.223];
 /// let pos2 = [2.713, 0.577];
@@ -157,7 +157,7 @@ macro_rules! point {
 /// # Examples
 ///
 /// ```
-/// use vlog::label;
+/// use v_log::label;
 ///
 /// let pos = [3.234, -1.223];
 ///
@@ -212,7 +212,7 @@ macro_rules! label {
 /// # Examples
 ///
 /// ```
-/// use vlog::line;
+/// use v_log::line;
 ///
 /// let pos1 = [3.234, -1.223];
 /// let pos2 = [2.713, 0.577];
@@ -452,11 +452,11 @@ macro_rules! __line {
 /// # Examples
 ///
 /// ```
-/// use vlog::{message, vlog_enabled};
+/// use v_log::{message, vlog_enabled};
 ///
 /// # struct Data { x: u32, y: u32 }
 /// # fn expensive_call() -> Data { Data { x: 0, y: 0 } }
-/// # let my_vlogger = vlog::__private_api::GlobalVLogger;
+/// # let my_vlogger = v_log::__private_api::GlobalVLogger;
 /// if vlog_enabled!("main_surface") {
 ///     let data = expensive_call();
 ///     message!("main_surface", color: Info, "expensive debug data: {} {}", data.x, data.y);

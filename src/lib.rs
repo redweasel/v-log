@@ -13,15 +13,18 @@
 //! by this crate, and the consumer of those libraries can choose the vlogging
 //! implementation that is most suitable for its use case.
 //!
-//! Vlogging can be disabled by a `no-vlog` feature flag in the lib using it.
-//! If this feature flag is not available or unused, vlogging macros will run.
 //! If no vlogging implementation is selected, the facade falls back to a "noop"
 //! implementation, which has very little overhead.
 //!
-//! A vlog request consists of a _target_, a _level_, and a _body_. A target is a
+//! A vlog request consists of a _target_, a _surface_, and a _visual_. A target is a
 //! string which defaults to the module path of the location of the vlog request,
-//! though that default may be overridden. VLogger implementations typically use
-//! the target to filter requests based on some user configuration.
+//! though that default may be overridden. Vlogger implementations typically use
+//! the target to filter requests based on some user configuration. A surface is
+//! a space or context in which the drawing is done. Vlogger implementations may
+//! choose different ways to represent them, but any named surface must be either
+//! filtered out or displayed by the implementation. There is no global "main-surface",
+//! as drawing surfaces/spaces are created on demand. One can think of these as
+//! plot figures or desktop windows.
 //!
 //! # Usage
 //!
@@ -219,7 +222,7 @@ impl<'a> Record<'a> {
 /// # Examples
 ///
 /// ```
-/// use vlog::{Record, Visual, Color};
+/// use v_log::{Record, Visual, Color};
 ///
 /// let record = Record::builder()
 ///                 .args(format_args!("Error!"))
@@ -236,7 +239,7 @@ impl<'a> Record<'a> {
 /// Alternatively, use [`MetadataBuilder`](struct.MetadataBuilder.html):
 ///
 /// ```
-/// use vlog::{Record, Visual, Color, MetadataBuilder};
+/// use v_log::{Record, Visual, Color, MetadataBuilder};
 ///
 /// let error_metadata = MetadataBuilder::new()
 ///                         .target("myApp")
@@ -433,7 +436,7 @@ impl<'a> Metadata<'a> {
 /// ```
 /// let target = "myApp";
 /// let surface = "AppSurface";
-/// use vlog::MetadataBuilder;
+/// use v_log::MetadataBuilder;
 /// let metadata = MetadataBuilder::new()
 ///                     .surface(surface)
 ///                     .target(target)
@@ -746,16 +749,16 @@ pub fn set_boxed_vlogger(vlogger: Box<dyn VLog>) -> Result<(), SetVLoggerError> 
 /// # Examples
 ///
 /// ```ignore
-/// use vlog::{message, Record, Metadata};
+/// use v_log::{message, Record, Metadata};
 ///
 /// static MY_VLOGGER: MyVLogger = MyVLogger;
 ///
 /// struct MyVLogger;
 ///
-/// impl vlog::VLog for MyVLogger {...}
+/// impl v_log::VLog for MyVLogger {...}
 ///
 /// # fn main(){
-/// vlog::set_vlogger(&MY_VLOGGER).unwrap();
+/// v_log::set_vlogger(&MY_VLOGGER).unwrap();
 ///
 /// message!("hello vlog");
 /// # }

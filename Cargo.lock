@@ -3,5 +3,5 @@
 version = 4
 
 [[package]]
-name = "vlog"
+name = "v-log"
 version = "0.1.0"
