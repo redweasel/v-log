@@ -224,7 +224,7 @@ macro_rules! label {
 /// # Examples
 ///
 /// ```
-/// use v_log::line;
+/// use v_log::polyline;
 ///
 /// let pos1 = [3.234, -1.223];
 /// let pos2 = [2.713, 0.577];
