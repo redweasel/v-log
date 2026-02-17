@@ -176,6 +176,12 @@ impl<'a> Record<'a> {
         self.metadata.target()
     }
 
+    /// The name of the surface of the directive.
+    #[inline]
+    pub fn surface(&self) -> &'a str {
+        self.metadata.surface()
+    }
+
     /// The module path of the message.
     #[inline]
     pub fn module_path(&self) -> Option<&'a str> {
@@ -497,7 +503,7 @@ impl Default for MetadataBuilder<'_> {
 ///    These are useful to draw true circles. In a 3D context these represent spheres instead and the outline uses the correct sphere outline in the used view projection.
 /// 2. Point billboard marker where the size is determined in screen coordinates instead of the same space as the position coordinates.
 ///    Zooming in the view will not change their apparent size. These are useful to mark points.
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub enum PointStyle {
     /// A filled circle/sphere.
     FilledCircle,
@@ -523,7 +529,7 @@ pub enum PointStyle {
 }
 
 /// The style of a line type visual.
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub enum LineStyle {
     /// A simple straight continuous line
     Simple,
@@ -539,7 +545,7 @@ pub enum LineStyle {
 
 /// The text alignment relative to a specified spacepoint.
 /// All variants center the text vertically.
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Copy, Debug, Default)]
 #[repr(u8)]
 pub enum TextAlignment {
     /// Align the left side of the text to the position. Vertically centered.
@@ -585,17 +591,17 @@ pub enum Visual {
     /// A line placed in space.
     Line {
         /// The 1. spacepoint x-coordinate
-        x0: f64,
-        /// The 1. spacepoint y-coordinate
-        y0: f64,
-        /// The 1. spacepoint z-coordinate for 3D visualisations.
-        z0: f64,
-        /// The 2. spacepoint x-coordinate
         x1: f64,
-        /// The 2. spacepoint y-coordinate
+        /// The 1. spacepoint y-coordinate
         y1: f64,
-        /// The 2. spacepoint z-coordinate for 3D visualisations.
+        /// The 1. spacepoint z-coordinate for 3D visualisations.
         z1: f64,
+        /// The 2. spacepoint x-coordinate
+        x2: f64,
+        /// The 2. spacepoint y-coordinate
+        y2: f64,
+        /// The 2. spacepoint z-coordinate for 3D visualisations.
+        z2: f64,
         /// The drawing style of the line.
         style: LineStyle,
     },
