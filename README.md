@@ -3,7 +3,7 @@ v-log
 
 A Rust library providing a lightweight visual logging/debugging *facade*.
 
-[![Build status](https://img.shields.io/github/actions/workflow/status/rust-lang/v-log/main.yml?branch=master)](https://github.com/rust-lang/v-log/actions)
+[![Build status](https://img.shields.io/github/actions/workflow/status/redweasel/v-log/main.yml?branch=main)](https://github.com/redweasel/v-log/actions)
 [![Latest version](https://img.shields.io/crates/v/v-log.svg)](https://crates.io/crates/v-log)
 [![Documentation](https://docs.rs/v-log/badge.svg)](https://docs.rs/v-log)
 ![License](https://img.shields.io/crates/l/v-log.svg)
