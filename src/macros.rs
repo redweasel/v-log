@@ -20,24 +20,36 @@
 #[macro_export]
 macro_rules! clear {
     // clear!(vlogger: my_vlogger, target: "my_target", "my_surface")
-    (vlogger: $vlogger:expr, $surface:expr) => (
-        $crate::__private_api::clear($crate::__vlog_vlogger!($vlogger), $crate::__private_api::module_path!(), $surface)
-    );
+    (vlogger: $vlogger:expr, $surface:expr) => {
+        $crate::__private_api::clear(
+            $crate::__vlog_vlogger!($vlogger),
+            $crate::__private_api::module_path!(),
+            $surface,
+        )
+    };
 
     // clear!(vlogger: my_vlogger, "my_surface")
-    (vlogger: $vlogger:expr, target: $target:expr, $surface:expr) => (
+    (vlogger: $vlogger:expr, target: $target:expr, $surface:expr) => {
         $crate::__private_api::clear($crate::__vlog_vlogger!($vlogger), $target, $surface)
-    );
+    };
 
     // clear!(target: "my_target", "my_surface")
-    (target: $target:expr, $surface:expr) => (
-        $crate::__private_api::clear($crate::__vlog_vlogger!(__vlog_global_vlogger), $target, $surface)
-    );
+    (target: $target:expr, $surface:expr) => {
+        $crate::__private_api::clear(
+            $crate::__vlog_vlogger!(__vlog_global_vlogger),
+            $target,
+            $surface,
+        )
+    };
 
     // clear!("my_surface")
-    ($surface:expr) => (
-        $crate::__private_api::clear($crate::__vlog_vlogger!(__vlog_global_vlogger), $crate::__private_api::module_path!(), $surface)
-    );
+    ($surface:expr) => {
+        $crate::__private_api::clear(
+            $crate::__vlog_vlogger!(__vlog_global_vlogger),
+            $crate::__private_api::module_path!(),
+            $surface,
+        )
+    };
 }
 
 /// Logs a message to the vlogger.
@@ -472,8 +484,6 @@ macro_rules! __line {
 ///    message!(target: "Global", "main_surface", "expensive debug data: {} {}", data.x, data.y);
 /// }
 /// ```
-///
-/// This macro accepts the same `target` and `vlogger` arguments as [`macro@vlog`].
 #[macro_export]
 macro_rules! vlog_enabled {
     // vlog_enabled!(vlogger: my_vlogger, target: "my_target", "my_surface")
@@ -526,16 +536,36 @@ macro_rules! __vlog_vlogger {
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __point_style {
-    ("O") => ($crate::PointStyle::FilledCircle);
-    ("-O") => ($crate::PointStyle::Circle);
-    ("--O") => ($crate::PointStyle::DashedCircle);
-    ("o") => ($crate::PointStyle::Point);
-    ("-o") => ($crate::PointStyle::PointOutline);
-    ("s") => ($crate::PointStyle::PointSquare);
-    ("-s") => ($crate::PointStyle::PointSquareOutline);
-    ("x") => ($crate::PointStyle::PointCross);
-    ("d") => ($crate::PointStyle::PointDiamond);
-    ("-d") => ($crate::PointStyle::PointDiamondOutline);
+    ("O") => {
+        $crate::PointStyle::FilledCircle
+    };
+    ("-O") => {
+        $crate::PointStyle::Circle
+    };
+    ("--O") => {
+        $crate::PointStyle::DashedCircle
+    };
+    ("o") => {
+        $crate::PointStyle::Point
+    };
+    ("-o") => {
+        $crate::PointStyle::PointOutline
+    };
+    ("s") => {
+        $crate::PointStyle::PointSquare
+    };
+    ("-s") => {
+        $crate::PointStyle::PointSquareOutline
+    };
+    ("x") => {
+        $crate::PointStyle::PointCross
+    };
+    ("d") => {
+        $crate::PointStyle::PointDiamond
+    };
+    ("-d") => {
+        $crate::PointStyle::PointDiamondOutline
+    };
     ($s:literal) => {
         compile_error!(concat!("unknown point style ", $s))
     };
@@ -547,12 +577,24 @@ macro_rules! __point_style {
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __line_style {
-    ("-") => ($crate::LineStyle::Simple);
-    ("--") => ($crate::LineStyle::Dashed);
-    ("->") => ($crate::LineStyle::Arrow);
-    ("_>") => ($crate::LineStyle::InsideHarpoonCCW);
-    ("<_") => ($crate::LineStyle::InsideHarpoonCW);
-    ($s:literal) => (panic!(concat!("unknown line style ", $s)));
+    ("-") => {
+        $crate::LineStyle::Simple
+    };
+    ("--") => {
+        $crate::LineStyle::Dashed
+    };
+    ("->") => {
+        $crate::LineStyle::Arrow
+    };
+    ("_>") => {
+        $crate::LineStyle::InsideHarpoonCCW
+    };
+    ("<_") => {
+        $crate::LineStyle::InsideHarpoonCW
+    };
+    ($s:literal) => {
+        panic!(concat!("unknown line style ", $s))
+    };
     ($s:ident) => {
         $crate::LineStyle::$s
     };

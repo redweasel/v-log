@@ -117,10 +117,10 @@ impl<'a> MaybeStaticStr<'a> {
 ///
 /// # Use
 ///
-/// `Record` structures are passed as parameters to the [`vlog`][method.vlog]
+/// `Record` structures are passed as parameters to the [`vlog`][VLog::vlog]
 /// method of the [`VLog`] trait. Vlogger implementors manipulate these
 /// structures in order to display vlog commands. `Record`s are automatically
-/// created by the [`vlog!`] macro and so are not seen by vlog users.
+/// created by the macros and so are not seen by vlog users.
 #[derive(Clone, Debug)]
 pub struct Record<'a> {
     metadata: Metadata<'a>,
@@ -145,19 +145,19 @@ impl<'a> Record<'a> {
     pub fn args(&self) -> &fmt::Arguments<'a> {
         &self.args
     }
-    
+
     /// The visual element to draw.
     #[inline]
     pub fn visual(&self) -> &Visual {
         &self.visual
     }
-    
+
     /// The color of the visual element.
     #[inline]
     pub fn color(&self) -> &Color {
         &self.color
     }
-    
+
     /// The size of the visual element.
     #[inline]
     pub fn size(&self) -> f64 {
@@ -492,7 +492,7 @@ impl Default for MetadataBuilder<'_> {
 }
 
 /// The style of a point type visual. There is two distinct types of styles.
-/// 
+///
 /// 1. Circle with absolute size: [`FilledCircle`](`PointStyle::FilledCircle`), [`Circle`](`PointStyle::Circle`), [`DashedCircle`](`PointStyle::DashedCircle`).
 ///    These are useful to draw true circles. In a 3D context these represent spheres instead and the outline uses the correct sphere outline in the used view projection.
 /// 2. Point billboard marker where the size is determined in screen coordinates instead of the same space as the position coordinates.
@@ -505,7 +505,7 @@ pub enum PointStyle {
     Circle,
     /// A dashed circle/sphere outline.
     DashedCircle,
-    
+
     /// A filled circle. Dynamically scaled so the size is the pixel size.
     Point,
     /// A circle outline. Dynamically scaled so the size is the pixel size.
@@ -580,7 +580,7 @@ pub enum Visual {
         /// The spacepoint z-coordinate for 3D visualisations.
         z: f64,
         /// The drawing style of the circle/point.
-        style: PointStyle
+        style: PointStyle,
     },
     /// A line placed in space.
     Line {
@@ -597,7 +597,7 @@ pub enum Visual {
         /// The 2. spacepoint z-coordinate for 3D visualisations.
         z1: f64,
         /// The drawing style of the line.
-        style: LineStyle
+        style: LineStyle,
     },
 }
 
@@ -635,7 +635,7 @@ pub trait VLog {
     /// discarded anyway.
     fn enabled(&self, metadata: &Metadata) -> bool;
     /// Draw a point or line in 3D or 2D (ignoring z or using it as z-index).
-    /// 
+    ///
     /// This is only called if the vlogging of messages with the given metadata is enabled.
     fn vlog(&self, record: &Record);
     /// Clear a drawing surface e.g. to redraw its content.
@@ -653,7 +653,6 @@ impl VLog for NopVLogger {
     fn vlog(&self, _: &Record) {}
     fn clear(&self, _: &str) {}
 }
-
 
 impl<T> VLog for &'_ T
 where
@@ -820,7 +819,9 @@ where
 pub unsafe fn set_vlogger_racy(vlogger: &'static dyn VLog) -> Result<(), SetVLoggerError> {
     match STATE.load(Ordering::Acquire) {
         UNINITIALIZED => {
-            unsafe { VLOGGER = vlogger; }
+            unsafe {
+                VLOGGER = vlogger;
+            }
             STATE.store(INITIALIZED, Ordering::Release);
             Ok(())
         }
@@ -848,7 +849,6 @@ impl fmt::Display for SetVLoggerError {
 // The Error trait is not available in libcore
 #[cfg(feature = "std")]
 impl error::Error for SetVLoggerError {}
-
 
 /// Returns a reference to the vlogger.
 ///
