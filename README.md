@@ -41,7 +41,7 @@ pub fn shave_the_yak(yak: &mut Yak) {
     label!("yak_surface", [10.0, 10.0], (12.0, Warn, "<"), "Commencing yak shaving!");
 
     for (&pos1, &pos2) in &yak.lines {
-        line!("yak_surface", (pos1, pos2), 2.0, Base);
+        polyline!("yak_surface", (pos1, pos2), 2.0, Base);
     }
 }
 ```

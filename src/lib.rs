@@ -29,7 +29,7 @@
 //! # Usage
 //!
 //! The basic use of the vlog crate is through the vlogging macros:
-//! [`point!`], [`line!`], [`message!`], [`label!`], [`clear!`].
+//! [`point!`], [`polyline!`], [`message!`], [`label!`], [`clear!`].
 //! They form the basic building blocks of drawing.
 
 #![warn(missing_docs)]

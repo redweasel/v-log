@@ -231,18 +231,18 @@ macro_rules! label {
 /// let pos3 = [6.283, 0.692];
 ///
 /// // text is only allowed on single lines
-/// line!("main_surface", (pos1, pos2), 5.0, Base, "--", "Position is: x: {}, y: {}", pos1[0], pos1[1]);
-/// line!("main_surface", (pos1, pos2), 5.0, Base, "--");
-/// line!("main_surface", (pos1, pos2), 5.0, Base);
-/// line!("main_surface", (pos1, pos2, pos3), 5.0, Base, "--");
-/// line!("main_surface", (pos1, pos2, pos3), 5.0, Base);
+/// polyline!("main_surface", (pos1, pos2), 5.0, Base, "--", "Position is: x: {}, y: {}", pos1[0], pos1[1]);
+/// polyline!("main_surface", (pos1, pos2), 5.0, Base, "--");
+/// polyline!("main_surface", (pos1, pos2), 5.0, Base);
+/// polyline!("main_surface", (pos1, pos2, pos3), 5.0, Base, "--");
+/// polyline!("main_surface", (pos1, pos2, pos3), 5.0, Base);
 /// // adding a last , makes it closed -> draws a triangle
-/// line!("main_surface", (pos1, pos2, pos3,), 5.0, Base, "--");
-/// line!("main_surface", (pos1, pos2, pos3,), 5.0, Base);
+/// polyline!("main_surface", (pos1, pos2, pos3,), 5.0, Base, "--");
+/// polyline!("main_surface", (pos1, pos2, pos3,), 5.0, Base);
 /// ```
 #[macro_export]
-macro_rules! line {
-    // line!(vlogger: my_vlogger, target: "my_target", "my_surface", [1.0, 2.0], 5.0, "o", Base, "a {} event", "log")
+macro_rules! polyline {
+    // polyline!(vlogger: my_vlogger, target: "my_target", "my_surface", [1.0, 2.0], 5.0, "o", Base, "a {} event", "log")
     (vlogger: $vlogger:expr, target: $target:expr, $surface:expr, $($arg:tt)+) => ({
         $crate::__line!(
             $crate::__vlog_vlogger!($vlogger),
@@ -252,7 +252,7 @@ macro_rules! line {
         )
     });
 
-    // line!(vlogger: my_vlogger, "my_surface", [1.0, 2.0], 5.0, "o", Base, "a {} event", "log")
+    // polyline!(vlogger: my_vlogger, "my_surface", [1.0, 2.0], 5.0, "o", Base, "a {} event", "log")
     (vlogger: $vlogger:expr, $surface:expr, $($arg:tt)+) => ({
         $crate::__line!(
             $crate::__vlog_vlogger!($vlogger),
@@ -262,7 +262,7 @@ macro_rules! line {
         )
     });
 
-    // line!(target: "my_target", "my_surface", [1.0, 2.0], 5.0, "o", Base, "a {} event", "log")
+    // polyline!(target: "my_target", "my_surface", [1.0, 2.0], 5.0, "o", Base, "a {} event", "log")
     (target: $target:expr, $surface:expr, $($arg:tt)+) => ({
         $crate::__line!(
             $crate::__vlog_vlogger!(__vlog_global_vlogger),
@@ -272,7 +272,7 @@ macro_rules! line {
         )
     });
 
-    // line!("my_surface", [1.0, 2.0], 5.0, "o", Base, "a {} event", "log")
+    // polyline!("my_surface", [1.0, 2.0], 5.0, "o", Base, "a {} event", "log")
     ($surface:expr, $($arg:tt)+) => (
         $crate::__line!(
             $crate::__vlog_vlogger!(__vlog_global_vlogger),
