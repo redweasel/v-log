@@ -569,9 +569,10 @@ macro_rules! __point_style {
     ($s:literal) => {
         compile_error!(concat!("unknown point style ", $s))
     };
-    ($s:ident) => {
-        $crate::PointStyle::$s
-    };
+    ($s:ident) => {{
+        use $crate::PointStyle::*;
+        $s
+    }};
 }
 
 #[doc(hidden)]
@@ -595,9 +596,10 @@ macro_rules! __line_style {
     ($s:literal) => {
         panic!(concat!("unknown line style ", $s))
     };
-    ($s:ident) => {
-        $crate::LineStyle::$s
-    };
+    ($s:expr) => {{
+        use $crate::LineStyle::*;
+        $s
+    }};
 }
 
 #[doc(hidden)]
@@ -618,9 +620,10 @@ macro_rules! __alignment {
     ($a:literal) => {
         compile_error!(concat!("unknown text alignment ", $a))
     };
-    ($a:ident) => {
-        $crate::TextAlignment::$a
-    };
+    ($a:expr) => {{
+        use $crate::TextAlignment::*;
+        $a
+    }};
 }
 
 #[doc(hidden)]
@@ -629,7 +632,8 @@ macro_rules! __color {
     ($hex:literal) => {
         $crate::Color::Hex($hex)
     };
-    ($name:ident) => {
-        $crate::Color::$name
-    };
+    ($name:expr) => {{
+        use $crate::Color::*;
+        $name
+    }};
 }

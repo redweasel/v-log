@@ -608,7 +608,7 @@ pub enum Visual {
 }
 
 /// Basic debugging theme colors.
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Copy, Debug, Default)]
 pub enum Color {
     /// Base line color. E.g. white on black background.
     #[default]
