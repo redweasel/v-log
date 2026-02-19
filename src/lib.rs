@@ -305,13 +305,13 @@ impl<'a> RecordBuilder<'a> {
         self
     }
 
-    /// Set [`visual`](struct.Record.html#method.visual).
+    /// Set [`color`](struct.Record.html#method.color).
     pub fn color(&mut self, color: Color) -> &mut RecordBuilder<'a> {
         self.record.color = color;
         self
     }
 
-    /// Set [`visual`](struct.Record.html#method.visual).
+    /// Set [`size`](struct.Record.html#method.size).
     pub fn size(&mut self, size: f64) -> &mut RecordBuilder<'a> {
         self.record.size = size;
         self
@@ -499,18 +499,31 @@ impl Default for MetadataBuilder<'_> {
 
 /// The style of a point type visual. There is two distinct types of styles.
 ///
-/// 1. Circle with absolute size: [`FilledCircle`](`PointStyle::FilledCircle`), [`Circle`](`PointStyle::Circle`), [`DashedCircle`](`PointStyle::DashedCircle`).
-///    These are useful to draw true circles. In a 3D context these represent spheres instead and the outline uses the correct sphere outline in the used view projection.
+/// 1. Circle with absolute size: [`FilledCircle`](`PointStyle::FilledCircle`), [`Circle`](`PointStyle::Circle`), [`DashedCircle`](`PointStyle::DashedCircle`), [`FilledSquare`](`PointStyle::FilledSquare`), [`Square`](`PointStyle::Square`), [`DashedSquare`](`PointStyle::DashedSquare`).
+///    These are useful to draw circles/squares with a fixed size. In a 3D context these represent spheres/cubes instead.
+///    The circle outline uses the correct sphere outline in the used view projection, which means they become
+///    ellipses/hyperbolas in a perspective projection. The outlined cube is preferrably drawn as a wireframe cube.
 /// 2. Point billboard marker where the size is determined in screen coordinates instead of the same space as the position coordinates.
 ///    Zooming in the view will not change their apparent size. These are useful to mark points.
 #[derive(Clone, Copy, Debug)]
+#[non_exhaustive]
 pub enum PointStyle {
-    /// A filled circle/sphere.
+    /* 2D/3D objects */
+
+    /// A filled circle/sphere. [`size`](struct.Record.html#method.size) is the diameter.
     FilledCircle,
-    /// A circle/sphere outline.
+    /// A circle/sphere outline. [`size`](struct.Record.html#method.size) is the diameter.
     Circle,
-    /// A dashed circle/sphere outline.
+    /// A dashed circle/sphere outline. [`size`](struct.Record.html#method.size) is the diameter.
     DashedCircle,
+    /// A filled square/cube. [`size`](struct.Record.html#method.size) is the width.
+    FilledSquare,
+    /// A square/cube outline/wireframe. [`size`](struct.Record.html#method.size) is the width.
+    Square,
+    /// A dashed square/cube outline/wireframe. [`size`](struct.Record.html#method.size) is the width.
+    DashedSquare,
+
+    /* 2D markers */
 
     /// A filled circle. Dynamically scaled so the size is the pixel size.
     Point,
@@ -530,6 +543,7 @@ pub enum PointStyle {
 
 /// The style of a line type visual.
 #[derive(Clone, Copy, Debug)]
+#[non_exhaustive]
 pub enum LineStyle {
     /// A simple straight continuous line
     Simple,
@@ -609,6 +623,7 @@ pub enum Visual {
 
 /// Basic debugging theme colors.
 #[derive(Clone, Copy, Debug, Default)]
+#[non_exhaustive]
 pub enum Color {
     /// Base line color. E.g. white on black background.
     #[default]
