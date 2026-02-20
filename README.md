@@ -31,7 +31,7 @@ log whatever geometric information will be useful to downstream consumers:
 
 ```toml
 [dependencies]
-v-log = "0.1"
+v-log = "0.2"
 ```
 
 ```rust

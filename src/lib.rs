@@ -509,7 +509,6 @@ impl Default for MetadataBuilder<'_> {
 #[non_exhaustive]
 pub enum PointStyle {
     /* 2D/3D objects */
-
     /// A filled circle/sphere. [`size`](struct.Record.html#method.size) is the diameter.
     FilledCircle,
     /// A circle/sphere outline. [`size`](struct.Record.html#method.size) is the diameter.
@@ -524,7 +523,6 @@ pub enum PointStyle {
     DashedSquare,
 
     /* 2D markers */
-
     /// A filled circle. Dynamically scaled so the size is the pixel size.
     Point,
     /// A circle outline. Dynamically scaled so the size is the pixel size.
