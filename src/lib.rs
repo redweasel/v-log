@@ -655,7 +655,7 @@ pub trait VLog {
     fn enabled(&self, metadata: &Metadata) -> bool;
     /// Draw a point or line in 3D or 2D (ignoring z or using it as z-index).
     ///
-    /// This is only called if the vlogging of messages with the given metadata is enabled.
+    /// The call has to check if the vlogging of the given metadata is enabled.
     fn vlog(&self, record: &Record);
     /// Clear a drawing surface e.g. to redraw its content.
     fn clear(&self, surface: &str);
