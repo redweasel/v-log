@@ -31,7 +31,7 @@ log whatever geometric information will be useful to downstream consumers:
 
 ```toml
 [dependencies]
-v-log = "0.2"
+v-log = "0.3"
 ```
 
 ```rust
@@ -49,7 +49,9 @@ pub fn shave_the_yak(yak: &mut Yak) {
 ### In executables
 
 In order to produce log output, executables have to use a vlogger implementation compatible with the facade.
-There is no vlogger implemented yet.
+Currently the following implementations exist:
+
+- [web-vlog](https://crates.io/crates/web-vlog): renders in a webbrowser
 
 Executables should choose a vlogger implementation and initialize it early in the
 runtime of the program. Vlogger implementations will typically include a

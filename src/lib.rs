@@ -29,8 +29,87 @@
 //! # Usage
 //!
 //! The basic use of the vlog crate is through the vlogging macros:
-//! [`point!`], [`polyline!`], [`message!`], [`label!`], [`clear!`].
-//! They form the basic building blocks of drawing.
+//! [`point!`], [`polyline!`], [`arrow!`], [`message!`], [`label!`], [`clear!`].
+//! They form the building blocks of drawing.
+//!
+//! The following example draws a square with text inside in 3 different ways
+//! ```rust
+//! use v_log::macros::*;
+//!
+//! // Use predefined square shape. The text may be displayed at any size and location.
+//! point!("s1", [10., 10.], 10., Base, "-S", "1");
+//!
+//! // Use closed polyline using scale independent line thickness 0.
+//! polyline!("s2", closed: [[5., 5.], [5., 15.], [15., 15.], [15., 5.]], 0., Base, "-", 10., "2");
+//!
+//! // Draw every line individually and put a label in the center.
+//! polyline!("s3", ([5., 5.], [5., 15.]), 0., Base, "-");
+//! polyline!("s3", ([5., 15.], [15., 15.]), 0., Base, "-");
+//! polyline!("s3", ([15., 15.], [15., 5.]), 0., Base, "-");
+//! polyline!("s3", ([15., 5.], [5., 5.]), 0., Base, "-");
+//! label!("s3", [10., 10.], (10., Base, "."), "3");
+//! ```
+//!
+//! The enums [`LineStyle`], [`PointStyle`], [`TextAlignment`] defined in this library,
+//! can be used directly as arguments, however it is recommended to use the shorthands instead.
+//! The shorthands are documented on the enum items. E.g. [`LineStyle::Simple`] would be `"-"`.
+//! 
+//! # Implementing a Vlogger
+//! 
+//! Visual loggers implement the [`VLog`] trait. Here is a very basic example, that
+//! uses the `draw_line`, `draw_point`, `draw_text`, `clear` functions from outside,
+//! to implement the most important features of the vlogger, ignoring colors.
+//! 
+//! ```
+//! use v_log::*;
+//! 
+//! fn draw_line(surface: &str, a: [f64; 3], b: [f64; 3], thickness: f64) {}
+//! fn draw_point(surface: &str, p: [f64; 3], size: f64) {}
+//! fn draw_text(surface: &str, p: [f64; 3], fontsize: f64, text: &str) {}
+//! fn clear(surface: &str) {}
+//! 
+//! struct SimpleVlogger;
+//! 
+//! impl VLog for SimpleVlogger {
+//!     fn enabled(&self, _metadata: &Metadata) -> bool {
+//!         true
+//!     }
+//!     fn vlog(&self, record: &Record) {
+//!         if !self.enabled(record.metadata()) {
+//!             return;
+//!         }
+//!         let surface = record.surface();
+//!         let size = record.size();
+//!         let label = record.args().to_string();
+//!         match record.visual() {
+//!             Visual::Message => {
+//!                 println!("{surface}: {label}");
+//!             }
+//!             Visual::Label { x, y, z, alignment } => {
+//!                 draw_text(surface, [*x, *y, *z], size, &label);
+//!             }
+//!             Visual::Point { x, y, z, style } => {
+//!                 draw_point(surface, [*x, *y, *z], size);
+//!                 if !label.is_empty() {
+//!                     draw_text(surface, [*x, *y, *z], size, &label);
+//!                 }
+//!             }
+//!             Visual::Line { x1, y1, z1, x2, y2, z2, style } => {
+//!                 draw_line(surface, [*x1, *y1, *z1], [*x2, *y2, *z2], size);
+//!                 if !label.is_empty() {
+//!                     draw_text(surface, [(x1 + x2) * 0.5, (y1 + y2) * 0.5, (z1 + z2) * 0.5], 16.0, &label);
+//!                 }
+//!             }
+//!         }
+//!     }
+//!     fn clear(&self, surface: &str) {
+//!         clear(surface);
+//!     }
+//!     fn flush(&self) {}
+//! }
+//! # fn main() {}
+//! ```
+//! 
 
 #![warn(missing_docs)]
 #![deny(missing_debug_implementations, unconditional_recursion)]
@@ -52,7 +131,7 @@ use std::cell::Cell;
 use std::sync::atomic::Ordering;
 
 #[macro_use]
-mod macros;
+pub mod macros;
 #[doc(hidden)]
 pub mod __private_api;
 
@@ -510,32 +589,45 @@ impl Default for MetadataBuilder<'_> {
 pub enum PointStyle {
     /* 2D/3D objects */
     /// A filled circle/sphere. [`size`](struct.Record.html#method.size) is the diameter.
+    /// Shorthand: `"O"`
     FilledCircle,
     /// A circle/sphere outline. [`size`](struct.Record.html#method.size) is the diameter.
+    /// Shorthand: `"-O"`
     Circle,
     /// A dashed circle/sphere outline. [`size`](struct.Record.html#method.size) is the diameter.
+    /// Shorthand: `"--O"`
     DashedCircle,
     /// A filled square/cube. [`size`](struct.Record.html#method.size) is the width.
+    /// Shorthand: `"S"`
     FilledSquare,
     /// A square/cube outline/wireframe. [`size`](struct.Record.html#method.size) is the width.
+    /// Shorthand: `"-S"`
     Square,
     /// A dashed square/cube outline/wireframe. [`size`](struct.Record.html#method.size) is the width.
+    /// Shorthand: `"--S"`
     DashedSquare,
 
     /* 2D markers */
     /// A filled circle. Dynamically scaled so the size is the pixel size.
+    /// Shorthand: `"o"`
     Point,
     /// A circle outline. Dynamically scaled so the size is the pixel size.
+    /// Shorthand: `"-o"`
     PointOutline,
     /// A filled square. Dynamically scaled so the size is the pixel size.
+    /// Shorthand: `"s"`
     PointSquare,
     /// A square outline. Dynamically scaled so the size is the pixel size.
+    /// Shorthand: `"-s"`
     PointSquareOutline,
     /// An `x` marker. Dynamically scaled so the size is the pixel size.
+    /// Shorthand: `"x"`
     PointCross,
     /// A filled diamond. Dynamically scaled so the size is the pixel size.
+    /// Shorthand: `"d"`
     PointDiamond,
     /// A diamond outline. Dynamically scaled so the size is the pixel size.
+    /// Shorthand: `"-d"`
     PointDiamondOutline,
 }
 
@@ -543,15 +635,21 @@ pub enum PointStyle {
 #[derive(Clone, Copy, Debug)]
 #[non_exhaustive]
 pub enum LineStyle {
-    /// A simple straight continuous line
+    /// A simple straight continuous line.
+    /// Shorthand: `"-"`
     Simple,
-    /// A dashed line
+    /// A dashed line.
+    /// Shorthand: `"--"`
     Dashed,
-    /// A line with an arrowhead on the second point.
+    /// A line with an arrowhead on the second point. Shorthand: `"->"`
     Arrow,
-    /// A line with half an arrowhead on the second point or along the line. If a polygon is drawn in CCW point order, the harpoon will be on the inside.
+    /// A line with half an arrowhead on the second point or along the line.
+    /// If a polygon is drawn in CCW point order, the harpoon will be on the inside.
+    /// Shorthand: `"_>"`
     InsideHarpoonCCW,
-    /// A line with half an arrowhead on the second point or along the line. If a polygon is drawn in CW point order, the harpoon will be on the inside.
+    /// A line with half an arrowhead on the second point or along the line.
+    /// If a polygon is drawn in CW point order, the harpoon will be on the inside.
+    /// Shorthand: `"<_"`
     InsideHarpoonCW,
 }
 
@@ -561,13 +659,17 @@ pub enum LineStyle {
 #[repr(u8)]
 pub enum TextAlignment {
     /// Align the left side of the text to the position. Vertically centered.
+    /// Shorthand: `"<"`
     Left = 0,
     /// Center the text on the position.
+    /// Shorthand: `"."`
     Center = 1,
     /// Align the right side of the text to the position. Vertically centered.
+    /// Shorthand: `">"`
     Right = 2,
     /// Center the text on the position if possible, but the vlogger is allowed
     /// to shift the text by a small amount for better readability.
+    /// Shorthand: `"x"`
     #[default]
     Flexible = 3,
 }
@@ -640,6 +742,8 @@ pub enum Color {
     Y,
     /// Some shade of blue (rg**B** = XY**Z**)
     Z,
+    /// E.g. some shade of pink like the usual missing texture.
+    Missing,
     /// A specific color by hexcode. The MSB is red, the LSB is alpha.
     Hex(u32),
 }
@@ -652,13 +756,34 @@ pub trait VLog {
     /// This is used by the `vlog_enabled!` macro to allow callers to avoid
     /// expensive computation of vlog message arguments if the message would be
     /// discarded anyway.
+    ///
+    /// # For implementors
+    ///
+    /// This method isn't called automatically by the vlogging macros.
+    /// It's up to an implementation of the `VLog` trait to call `enabled` in its own
+    /// `vlog` method implementation to guarantee that filtering is applied.
     fn enabled(&self, metadata: &Metadata) -> bool;
     /// Draw a point or line in 3D or 2D (ignoring z or using it as z-index).
     ///
-    /// The call has to check if the vlogging of the given metadata is enabled.
+    /// # For implementors
+    ///
+    /// Note that `enabled` is *not* necessarily called before this method.
+    /// Implementations of `vlog` should perform all necessary filtering
+    /// internally.
     fn vlog(&self, record: &Record);
     /// Clear a drawing surface e.g. to redraw its content.
+    ///
+    /// # For implementors
+    ///
+    /// Note that `enabled` *is* called before this method.
     fn clear(&self, surface: &str);
+    /// Flushes any buffered records.
+    ///
+    /// # For implementors
+    ///
+    /// This method isn't called automatically by the vlogging macros.
+    /// It can be called manually on shut-down to ensure any in-flight records are flushed.
+    fn flush(&self);
 }
 
 /// A dummy initial value for VLOGGER.
@@ -671,6 +796,7 @@ impl VLog for NopVLogger {
 
     fn vlog(&self, _: &Record) {}
     fn clear(&self, _: &str) {}
+    fn flush(&self) {}
 }
 
 impl<T> VLog for &'_ T
@@ -687,6 +813,10 @@ where
 
     fn clear(&self, surface: &str) {
         (**self).clear(surface);
+    }
+
+    fn flush(&self) {
+        (**self).flush();
     }
 }
 
@@ -706,6 +836,10 @@ where
     fn clear(&self, surface: &str) {
         self.as_ref().clear(surface);
     }
+
+    fn flush(&self) {
+        self.as_ref().flush();
+    }
 }
 
 #[cfg(feature = "std")]
@@ -723,6 +857,10 @@ where
 
     fn clear(&self, surface: &str) {
         self.as_ref().clear(surface);
+    }
+
+    fn flush(&self) {
+        self.as_ref().flush();
     }
 }
 
