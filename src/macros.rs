@@ -538,27 +538,37 @@ macro_rules! __line {
 
 #[doc(hidden)]
 #[macro_export]
+#[cfg(feature = "std")]
+macro_rules! __std_only {
+    ($($t:tt)*) => {
+        $($t)*
+    };
+}
+#[doc(hidden)]
+#[macro_export]
+#[cfg(not(feature = "std"))]
+macro_rules! __std_only {
+    ($($t:tt)*) => {
+        compile_error!("std required for arrow macro with fixed length")
+    };
+}
+
+#[doc(hidden)]
+#[macro_export]
 #[clippy::format_args]
 macro_rules! __arrow {
     ($vlogger:expr, $surface:expr, $loc:expr, $pos:expr, $dir:expr, ($len:expr), $size:expr, $color:tt, $($arg:tt)+) => {
-        #[cfg(feature = "std")]
-        {
-            $crate::__private_api::vlog_arrow(
-                $vlogger,
-                $crate::__private_api::format_args!($($arg)+),
-                $pos,
-                $dir,
-                Some($len),
-                $size,
-                $crate::__color!($color),
-                $surface,
-                $loc
-            )
-        }
-        #[cfg(not(feature = "std"))]
-        {
-            compile_error!("std required for arrow macro with fixed length")
-        }
+        $crate::__std_only!($crate::__private_api::vlog_arrow(
+            $vlogger,
+            $crate::__private_api::format_args!($($arg)+),
+            $pos,
+            $dir,
+            Some($len),
+            $size,
+            $crate::__color!($color),
+            $surface,
+            $loc
+        ))
     };
     ($vlogger:expr, $surface:expr, $loc:expr, $pos:expr, $dir:expr, ($len:expr), $size:expr, $color:tt) => {
         $crate::__arrow!($vlogger, $surface, $loc, $pos, $dir, ($len), $size, $color, "")
