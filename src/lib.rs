@@ -53,23 +53,23 @@
 //! The enums [`LineStyle`], [`PointStyle`], [`TextAlignment`] defined in this library,
 //! can be used directly as arguments, however it is recommended to use the shorthands instead.
 //! The shorthands are documented on the enum items. E.g. [`LineStyle::Simple`] would be `"-"`.
-//! 
+//!
 //! # Implementing a Vlogger
-//! 
+//!
 //! Visual loggers implement the [`VLog`] trait. Here is a very basic example, that
 //! uses the `draw_line`, `draw_point`, `draw_text`, `clear` functions from outside,
 //! to implement the most important features of the vlogger, ignoring colors.
-//! 
+//!
 //! ```
 //! use v_log::*;
-//! 
+//!
 //! fn draw_line(surface: &str, a: [f64; 3], b: [f64; 3], thickness: f64) {}
 //! fn draw_point(surface: &str, p: [f64; 3], size: f64) {}
 //! fn draw_text(surface: &str, p: [f64; 3], fontsize: f64, text: &str) {}
 //! fn clear(surface: &str) {}
-//! 
+//!
 //! struct SimpleVlogger;
-//! 
+//!
 //! impl VLog for SimpleVlogger {
 //!     fn enabled(&self, _metadata: &Metadata) -> bool {
 //!         true
@@ -109,7 +109,7 @@
 //! }
 //! # fn main() {}
 //! ```
-//! 
+//!
 
 #![warn(missing_docs)]
 #![deny(missing_debug_implementations, unconditional_recursion)]

@@ -10,7 +10,7 @@
 
 //! Import this as `use v_log::macros::*` to import only the macros.
 
-pub use crate::{point, polyline, arrow, message, label, clear, vlog_enabled};
+pub use crate::{arrow, clear, label, message, point, polyline, vlog_enabled};
 
 /// Clear a surface of the vlogger, including the messages that have been sent to it.
 ///
