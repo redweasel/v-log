@@ -315,7 +315,9 @@ macro_rules! polyline {
 /// // If `dir` has length zero or zero length is specified, a zero length arrow will get sent.
 /// // The label may get displayed, but the size, position and and format is up
 /// // to the vlogger implementation. E.g. it may only be displayed as a tooltip.
+/// # #[cfg(feature = "std")]
 /// arrow!("main_surface", pos, dir, (50.0), 5.0, Base, "Position is: x: {}, y: {}", pos[0], pos[1]);
+/// # #[cfg(feature = "std")]
 /// arrow!("main_surface", pos, dir, (50.0), 5.0, Base);
 /// // Draw an arrow from `pos` pointing in direction `dir` with the length of `dir` and thickness 5.0.
 /// arrow!("main_surface", pos, dir, 5.0, Base, "Position is: x: {}, y: {}", pos[0], pos[1]);
@@ -539,17 +541,24 @@ macro_rules! __line {
 #[clippy::format_args]
 macro_rules! __arrow {
     ($vlogger:expr, $surface:expr, $loc:expr, $pos:expr, $dir:expr, ($len:expr), $size:expr, $color:tt, $($arg:tt)+) => {
-        $crate::__private_api::vlog_arrow(
-            $vlogger,
-            $crate::__private_api::format_args!($($arg)+),
-            $pos,
-            $dir,
-            Some($len),
-            $size,
-            $crate::__color!($color),
-            $surface,
-            $loc
-        )
+        #[cfg(feature = "std")]
+        {
+            $crate::__private_api::vlog_arrow(
+                $vlogger,
+                $crate::__private_api::format_args!($($arg)+),
+                $pos,
+                $dir,
+                Some($len),
+                $size,
+                $crate::__color!($color),
+                $surface,
+                $loc
+            )
+        }
+        #[cfg(not(feature = "std"))]
+        {
+            compile_error!("std required for arrow macro with fixed length")
+        }
     };
     ($vlogger:expr, $surface:expr, $loc:expr, $pos:expr, $dir:expr, ($len:expr), $size:expr, $color:tt) => {
         $crate::__arrow!($vlogger, $surface, $loc, $pos, $dir, ($len), $size, $color, "")

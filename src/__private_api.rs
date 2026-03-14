@@ -187,6 +187,7 @@ pub fn vlog_arrow<'a, P: IntoIterator<Item = f64>, L>(
         iter.next().unwrap_or(0.0),
         iter.next().unwrap_or(0.0),
     ];
+    #[cfg(feature = "std")]
     if let Some(len) = len {
         let mut dir_len = (dir[0] * dir[0] + dir[1] * dir[1] + dir[2] * dir[2]).sqrt();
         if !dir_len.is_finite() {
