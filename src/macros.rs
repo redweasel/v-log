@@ -245,8 +245,8 @@ macro_rules! label {
 /// // Draw two connected lines (polyline). These can not be labelled in
 /// // the macro, as a label on polylines is hard to control in implementations.
 /// // If you need a label, consider drawing the first segment with a label.
-/// polyline!("main_surface", closed: [pos1, pos2, pos3], 5.0, Base, "--");
-/// polyline!("main_surface", closed: [pos1, pos2, pos3], 5.0, Base);
+/// polyline!("main_surface", [pos1, pos2, pos3], 5.0, Base, "--");
+/// polyline!("main_surface", [pos1, pos2, pos3], 5.0, Base);
 /// // Draw a triangle (polygon). These can be labelled and the label is placed
 /// // in the centeroid of them. Note, this may not be inside of the polygon.
 /// // The textsize of the label must be specified before the text.
