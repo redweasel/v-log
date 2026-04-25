@@ -749,7 +749,7 @@ macro_rules! __line_style {
         $crate::LineStyle::InsideHarpoonCW
     };
     ($s:literal) => {
-        panic!(concat!("unknown line style ", $s))
+        compile_error!(concat!("unknown line style ", $s))
     };
     ($s:expr) => {{
         use $crate::LineStyle::*;
